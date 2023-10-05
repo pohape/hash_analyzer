@@ -26,7 +26,7 @@ def get_success_rate_after_specified(dataset: list, target: float, bet: float):
     fail = []
 
     for (after_specified, first_line, second_line) in after_specified:
-        if after_specified > bet:
+        if after_specified >= bet:
             success += 1
         else:
             fail.append([first_line, second_line])
