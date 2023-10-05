@@ -12,8 +12,14 @@ parser.add_argument("-b", "--bet", default=None)
 parser.add_argument("-a", "--stake", default=None)
 parser.add_argument("-t", "--target", default=None)
 parser.add_argument("-s", "--start-balance", default=None)
-args = parser.parse_args()
+parser.add_argument(
+    "-r",
+    "--target-twice-in-a-row",
+    action='store_true',
+    default=False
+)
 
+args = parser.parse_args()
 dataset = functions.load_dataset(args.file)
 
 if args.bet is None:
@@ -35,6 +41,7 @@ stake = round(float(args.stake), 2)
 bet = round(float(args.bet), 2)
 
 current_bet = None
+number_before = None
 
 for line in dataset:
     if current_bet is not None:
@@ -57,7 +64,7 @@ for line in dataset:
             ))
         current_bet = None
 
-    if line[1] == target:
+    if line[1] == target and (not args.target_twice_in_a_row or number_before == target):
         if balance < stake:
             print("Balance {} is less than the bet amount: {}, so we quit.".format(
                 balance,
@@ -72,3 +79,5 @@ for line in dataset:
         ))
         balance -= stake
         current_bet = bet
+
+    number_before = line[1]
